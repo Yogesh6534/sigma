@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Static Image with Background</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        transition: background-color 0.5s, color 0.5s;
+        background-color: #ffffcc;
+        color: black;
+        position: relative;
+    }
+
+    .corner-image {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background-size: cover;
+        transition: transform 0.5s ease;
+    }
+
+    #top-left {
+        top: 0;
+        left: 0;
+        background-image: url('leaf.jpg');
+    }
+
+    #top-right {
+        top: 0;
+        right: 0;
+        background-image: url('leaf.jpg');
+    }
+
+    #bottom-left {
+        bottom: 0;
+        left: 0;
+        background-image: url('leaf.jpg');
+    }
+
+    #bottom-right {
+        bottom: 0;
+        right: 0;
+        background-image: url('leaf.jpg');
+    }
+
+    #container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    #donutContainer {
+        width: 400px;
+        height: 400px;
+        margin-bottom: 20px;
+        background-color: #ffffff;
+        background-image: url('image.jpg');
+        background-size: cover;
+        background-position: center;
+        transition: transform 0.5s ease;
+    }
+
+    h1 {
+        transition: transform 0.5s ease;
+    }
+
+    @keyframes rotateLeaf {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .rotate-on-scroll {
+        animation: rotateLeaf 3s linear infinite;
+    }
+</style>
+</head>
+<body>
+
+<div id="top-left" class="corner-image"></div>
+<div id="top-right" class="corner-image"></div>
+<div id="bottom-left" class="corner-image"></div>
+<div id="bottom-right" class="corner-image"></div>
+
+<div id="container">
+    <h1 id="mainText">Banana</h1>
+    <div id="donutContainer"></div>
+    <p>Enjoy our freshly baked donuts!</p>
+</div>
+
+<script>
+    var lastScrollTime = 0;
+    var throttleDelay = 500;
+
+    function applyStyles(mainText, body, donutContainer) {
+        if (mainText.textContent === "All") {
+            body.style.backgroundColor = "#ffffff";
+            body.style.color = "black";
+            donutContainer.style.backgroundColor = "#d3d3d3";
+        } else {
+            body.style.color = "black";
+            donutContainer.style.marginBottom = "20px";
+        }
+    }
+
+    document.addEventListener("wheel", function(event) {
+        var currentTime = new Date().getTime();
+        if (currentTime - lastScrollTime < throttleDelay) {
+            return;
+        }
+        lastScrollTime = currentTime;
+
+        var mainText = document.getElementById('mainText');
+        var body = document.body;
+        var donutContainer = document.getElementById('donutContainer');
+        var cornerImages = document.querySelectorAll('.corner-image');
+
+        cornerImages.forEach(function(image) {
+            image.classList.add('rotate-on-scroll');
+        });
+
+        setTimeout(function() {
+            cornerImages.forEach(function(image) {
+                image.classList.remove('rotate-on-scroll');
+            });
+        }, 3000);
+
+        mainText.classList.add('animate-scale');
+        donutContainer.classList.add('animate-scale');
+
+        setTimeout(function() {
+            mainText.classList.remove('animate-scale');
+            donutContainer.classList.remove('animate-scale');
+        }, 500);
+
+        if (event.deltaY < 0) {
+            mainText.textContent = "Banana";
+            body.style.backgroundColor = "#add8e6";
+            body.style.color = "black";
+            donutContainer.style.backgroundColor = "#ffffff";
+        } else {
+            var randomNumber = Math.floor(Math.random() * 4) + 1;
+
+            switch(randomNumber) {
+                case 1:
+                    mainText.textContent = "Grapes";
+                    body.style.backgroundColor = "#ffffcc";
+                    body.style.color = "black";
+                    donutContainer.style.backgroundColor = "#ffffcc";
+                    break;
+                case 2:
+                    mainText.textContent = "Dragon";
+                    body.style.backgroundColor = "#ff6347";
+                    body.style.color = "white";
+                    donutContainer.style.backgroundColor = "#ff6347";
+                    break;
+                case 3:
+                    mainText.textContent = "Milk";
+                    body.style.backgroundColor = "#90ee90";
+                    body.style.color = "black";
+                    donutContainer.style.backgroundColor = "#90ee90";
+                    break;
+                case 4:
+                    mainText.textContent = "All";
+                    body.style.backgroundColor = "#d3d3d3";
+                    body.style.color = "black";
+                    donutContainer.style.backgroundColor = "#d3d3d3";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        applyStyles(mainText, body, donutContainer);
+    });
+</script>
+
+</body>
+</html>
